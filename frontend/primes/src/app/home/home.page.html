@@ -1,7 +1,8 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Primes
+      <ion-icon name="calculator-outline"></ion-icon>
+      Primes generator
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -9,7 +10,8 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Primes</ion-title>
+      
+      <ion-title size="large"> <ion-icon name="calculator-outline"></ion-icon> Primes</ion-title>
     </ion-toolbar>
   </ion-header>
 
@@ -17,60 +19,82 @@
     <ion-row justify-content-center>
       <ion-col text-center size="6"> <!-- this column will have the primes generator -->
         <ion-card>
-        <ion-list-header> <ion-title>Generate primes between a range here!</ion-title> </ion-list-header> <!--TROCAR AQUI POR CARD HEADER-->
-        <ion-item>
-          <ion-label>Lower range</ion-label>
-          <ion-input [(ngModel)]="lower"></ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label>Top range</ion-label>
-          <ion-input [(ngModel)]="top"></ion-input>
-        </ion-item>
-        <ion-button (click)="generatePrimes(lower, top)" type="submit" expand="block" color="primary" >Generate!</ion-button>
+          <ion-card-header>
+            <ion-card-title>
+              Generate primes between a range here!
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-grid>
+              <ion-row>
+                <ion-col>
+                  <ion-item>
+                    <ion-label>Lower range</ion-label>
+                    <ion-input [(ngModel)]="lower"></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col>
+                  <ion-item>
+                    <ion-label>Top range</ion-label>
+                    <ion-input [(ngModel)]="top"></ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+
+            <ion-button (click)="generatePrimes(lower, top)" type="submit" expand="block" color="primary" >Generate!</ion-button>
+          </ion-card-content>
       </ion-card>
       </ion-col>
 
 
       <ion-col size="6"> <!-- this column will have the primes already generated -->
         <div *ngIf="[inDatabase.length] > 0; else elseBlock">
-          <ion-card>
+          <ion-card style="display: flex; flex-direction: column">
             <ion-card-header>
               <ion-card-title>
                 Check this already generated ranges!
               </ion-card-title>
             </ion-card-header>
-          <ion-list>
-            <ion-item *ngFor="let p of inDatabase">
-              <ion-label>{{p.lowerRange}} to {{p.topRange}}</ion-label>
-              <!--<h6>{{p.resultSet}}</h6> -->
-            </ion-item>
-          </ion-list>
+            <ion-card-content>
+              <ion-item style="margin-top: 10px;">
+                <ion-label>Ranges</ion-label>
+                <ion-select [(ngModel)]="selectedRange" placeholder="Select the Range">
+                  <ion-select-option *ngFor="let selectedRange of inDatabase" [value]="selectedRange">{{selectedRange.lowerRange}} to {{selectedRange.topRange}}</ion-select-option>
+                </ion-select>
+              </ion-item>
+              <ion-button (click)="getPrimesInRange()" type="submit" expand="block" color="primary" style="margin-top: 10px;">Get Primes!</ion-button>
+            </ion-card-content>
         </ion-card>
         </div>
 
         <ng-template #elseBlock>
           <ion-card>
             <ion-card-header>
-              <ion-card-title>Generate some ranges to see them here!</ion-card-title> <!--TROCAR AQUI POR CARD HEADER-->
+              <ion-card-title>Generate some ranges to see them here!</ion-card-title>
             </ion-card-header>
           </ion-card>
-          
         </ng-template>
-        
+
       </ion-col>
     </ion-row>
 
     <ion-row justify-content-center>
       <ion-col size="12" text-center>
-        <div *ngIf=" [primesinselectedrange.length] > 0">
-          <ion-title>
-            Primes
-          </ion-title>
-          <ion-item *ngFor="let p of primesinselectedrange">
-            <!-- colocar cada p dentro de um circulo, um do lado do outro -->
-            {{p}}
-          </ion-item>
-        </div>
+        <!--<ion-card *ngIf=" [primesinselectedrange.length] > 0">-->
+        <ion-card *ngIf=" [selectedLower] != '' && [selectedTop] != ''">
+          <ion-card-header>
+            <ion-card-title>
+              Primes from {{selectedLower}} to {{selectedTop}}
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p class="range" *ngIf="[primesinselectedrange.length] > 0; else noPrimes">{{primesinselectedrange}}</p>
+            <ng-template #noPrimes>
+              <span>There are no prime numbers in this range</span>
+            </ng-template>
+          </ion-card-content>
+        </ion-card>
       </ion-col>
     </ion-row>
   </ion-grid>

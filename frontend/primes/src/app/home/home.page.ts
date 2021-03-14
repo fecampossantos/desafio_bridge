@@ -7,8 +7,7 @@ import { AlertController } from '@ionic/angular';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
-  //providers :[]
+  styleUrls: ['home.page.scss']
 })
 export class HomePage implements OnInit {
 
@@ -19,8 +18,12 @@ export class HomePage implements OnInit {
 
   addedPrime: PrimeDTO
 
-  primesinselectedrange: Number[] = []
+  primesinselectedrange: string = ""
 
+  selectedLower: Number
+  selectedTop: Number
+
+  selectedRange: PrimeDTO
 
   constructor(
     public service : PrimeService,
@@ -38,6 +41,8 @@ export class HomePage implements OnInit {
   }
 
   generatePrimes(low, top){
+    this.selectedLower = low
+    this.selectedTop = top
     const n1 = Number(low)
     const n2 = Number(top)
     if (isNaN(n1) || isNaN(n2)) {
@@ -61,7 +66,7 @@ export class HomePage implements OnInit {
     this.service.getByLowTop(low, top)
     .subscribe((data: PrimeDTO) => {
       this.addedPrime = data
-      this.primesinselectedrange = data.resultSet
+      this.primesinselectedrange = data.resultSet.join().split(",").join(", ")
     })
   }
 
@@ -75,6 +80,12 @@ export class HomePage implements OnInit {
     });
 
     await alert.present();
+  }
+
+  getPrimesInRange(){
+    this.selectedLower = this.selectedRange.lowerRange
+    this.selectedTop = this.selectedRange.topRange
+    this.primesinselectedrange = this.selectedRange.resultSet.join().split(",").join(", ")
   }
 
 
