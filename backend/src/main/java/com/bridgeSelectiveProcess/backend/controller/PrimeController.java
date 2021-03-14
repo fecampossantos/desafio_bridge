@@ -42,7 +42,7 @@ public class PrimeController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 	
-	//se nao existe um objeto com esse low e top, é criado e retornado. Se ja existe, é retornado ele.
+	
 	@CrossOrigin
 	@RequestMapping(value = "/{low}/{top}", method = RequestMethod.POST)
 	public ResponseEntity<Prime> addPrime(@PathVariable(value="low") Integer low, @PathVariable(value="top") Integer top) {
@@ -62,10 +62,6 @@ public class PrimeController {
 	@RequestMapping(value = "/", method = RequestMethod.POST)
 	public ResponseEntity<Prime> addPrimeBody(@RequestBody PrimeDTO primedto) {
 		Prime primepassed = primedto.toPrime();
-		
-		//System.out.println("Adding new value to the database!");
-		//System.out.println("Received "+primedto.toString());
-		//System.out.println("Adding: "+primepassed.toString());
 		
 		Optional<Prime> p = repository.getPrimeByRanges(primepassed.getLowerRange(), primepassed.getTopRange());
 		Prime prime;
@@ -93,8 +89,6 @@ public class PrimeController {
 	@CrossOrigin
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Object> delete(@PathVariable(value = "id") long id) {
-		
-		//System.out.println("Deleting value with id: "+id);
 		
 		Optional<Prime> p = repository.findById(id);
         if(p.isPresent()){
